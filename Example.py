@@ -19,7 +19,7 @@ def eodrec():
     total_tips = rec.Reconciliation(data_exporter(transactions_file), data_exporter(shift_file), data_exporter(people_file)).total_tips()
     chips_float = rec.Reconciliation(data_exporter(transactions_file), data_exporter(shift_file), data_exporter(people_file)).chips_floating()
 
-    html_table = [["header","End of Day Reconciliation"],
+    html_table = [["header", "End of Day Reconciliation"],
                   ["chips purchased", str(chips_purchased[0])],
                   ["chips cashed", str(chips_cashed[0])],
                   ["chips out on the tables", str(chips_float[0])],
@@ -41,7 +41,7 @@ def debts_byppl():
                                          "email",
                                          "address"], axis=1)
 
-    debt_byperson = [["header","Debts per Person"]]
+    debt_byperson = [["header", "Debts per Person"]]
     j = 1
     for i in debts.iterrows():
         debt_byperson.append([])
@@ -50,3 +50,4 @@ def debts_byppl():
         j += 1
     webbrowser.open(html_temp_file_generator(debt_byperson))
 
+eodrec()

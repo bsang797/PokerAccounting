@@ -2,7 +2,7 @@ import os
 import FormGenerator as FG
 from Functions import *
 
-file = os.getcwd()+"/Data/buy_in_transactions.csv"
+file = os.getcwd()+"/Data/transactions.csv"
 form_name = os.path.splitext(os.path.basename(file))[0]
 
 with open(file, "r") as f:
