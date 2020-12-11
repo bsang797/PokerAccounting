@@ -12,19 +12,21 @@ class PlayerReport:
         return buy_in.groupby(["person_id"])["quantity"].agg("sum").reset_index(name="buy_in")
 
     # There are a few kinks here I need to figure out
-  #  def average_buy_in(self):
-  #      self.transactions["avg_buy_in"] = self.buy_in_over_time()["buy_in"]
-  #      return self.transactions.groupby("person_id")["avg_buy_in"].agg("sum")
+    def average_buy_in(self):
+        avg_buy_in = self.transactions[self.transactions["quantity"] > 0]
+        return avg_buy_in.groupby("person_id")["quantity"].mean().reset_index(name="avg_buy_in")
 
     def debt_outstanding_over_time(self):
         chip_purchase = self.transactions[(self.transactions["chip_purchase"] == 1) & (self.transactions["transaction_type"] == "credit")]
-        #chip_purchase["debt"] = chip_purchase.groupby()
-        self.transactions["debt"] = chip_purchase.groupby(["transaction_type"])["quantity"].agg("sum")
-        print(self.transactions)
-        return chip_purchase.groupby(["player_id"])["quantity"].agg("sum").reset_index(name="debt")
+        return chip_purchase.groupby(["person_id"])["quantity"].agg("sum").reset_index(name="debt")
 
     def cash_credit_preference(self):
-        return self.transactions.groupby(["person_id", "transaction_type"]).size()
+        preference = self.transactions.groupby(["person_id", "transaction_type"]).size().reset_index(name="count")
+        preference["preference"] = preference["transaction_type"].map(str) + '(' + preference["count"].map(str) + ')'
+        return preference["preference"].astype(str).groupby(preference["person_id"]).agg(["size", ", ".join])
+
+
+
 
     def gain_loss_over_time(self):
-        return self.transactions.groupby(["person_id"])["quantity"].agg("sum")
+        return self.transactions.groupby(["person_id"])["quantity"].agg("sum").reset_index(name="gain/loss")

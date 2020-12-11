@@ -144,12 +144,106 @@ def avg_rake_shift():
         j += 1
     webbrowser.open(html_temp_file_generator(html_file))
 
-avg_rake_shift()
 
-def player_report():
-    buy_in = player.PlayerReport(data_exporter(transactions_file), data_exporter(shift_file)).buy_in_over_time()
-    #avg_buy_in = player.PlayerReport(data_exporter(transactions_file), data_exporter(shift_file)).average_buy_in()
-    debt_outstanding_over_time = player.PlayerReport(data_exporter(transactions_file), data_exporter(shift_file)).debt_outstanding_over_time()
-    print(debt_outstanding_over_time)
 
-player_report()
+
+def player_buy_in():
+    total_buy_in = player.PlayerReport(data_exporter(transactions_file), data_exporter(shift_file)).buy_in_over_time()
+    buy_in = pd.merge(data_exporter(people_file),
+                     total_buy_in,
+                     how="inner",
+                     on="person_id").drop(["person_id",
+                                           "phone_num",
+                                           "email",
+                                           "address"], axis=1)
+
+    html_file = [["header", "Total buy in from players"]]
+    j = 1
+    for i in buy_in.iterrows():
+        html_file.append([])
+        name = i[1]["first_name"] + " " + i[1]["last_name"]
+        html_file[j] = [name, str(i[1]["buy_in"])]
+        j += 1
+    webbrowser.open(html_temp_file_generator(html_file))
+
+def avg_player_buy_in():
+    tot_avg_buy_in = player.PlayerReport(data_exporter(transactions_file), data_exporter(shift_file)).average_buy_in()
+    buy_in = pd.merge(data_exporter(people_file),
+                     tot_avg_buy_in,
+                     how="inner",
+                     on="person_id").drop(["person_id",
+                                           "phone_num",
+                                           "email",
+                                           "address"], axis=1)
+
+    html_file = [["header", "Average player buy in"]]
+    j = 1
+    for i in buy_in.iterrows():
+        html_file.append([])
+        name = i[1]["first_name"] + " " + i[1]["last_name"]
+        html_file[j] = [name, str(i[1]["avg_buy_in"])]
+        j += 1
+    webbrowser.open(html_temp_file_generator(html_file))
+
+def player_debt_outstanding():
+    debt_outstanding_over_time = player.PlayerReport(data_exporter(transactions_file),
+                                                     data_exporter(shift_file)).debt_outstanding_over_time()
+    debt = pd.merge(data_exporter(people_file),
+                      debt_outstanding_over_time,
+                      how="inner",
+                      on="person_id").drop(["person_id",
+                                            "phone_num",
+                                            "email",
+                                            "address"], axis=1)
+
+    html_file = [["header", "Debt outstanding over time by player"]]
+    j = 1
+    for i in debt.iterrows():
+        html_file.append([])
+        name = i[1]["first_name"] + " " + i[1]["last_name"]
+        html_file[j] = [name, str(i[1]["debt"])]
+        j += 1
+    webbrowser.open(html_temp_file_generator(html_file))
+
+def player_payment_preference():
+    cash_credit_preference = player.PlayerReport(data_exporter(transactions_file), data_exporter(shift_file)).cash_credit_preference()
+
+    preference = pd.merge(data_exporter(people_file),
+                    cash_credit_preference,
+                    how="inner",
+                    on="person_id").drop(["person_id",
+                                          "phone_num",
+                                          "email",
+                                          "address", "size"], axis=1)
+    print(preference)
+    html_file = [["header", "Player payment preference"]]
+    j = 1
+    for i in preference.iterrows():
+        html_file.append([])
+        name = i[1]["first_name"] + " " + i[1]["last_name"]
+        html_file[j] = [name, str(i[1]["join"])]
+        j += 1
+    webbrowser.open(html_temp_file_generator(html_file))
+
+
+def player_gain_loss():
+    gain_loss_over_time = player.PlayerReport(data_exporter(transactions_file),
+                                                 data_exporter(shift_file)).gain_loss_over_time()
+    gain_loss = pd.merge(data_exporter(people_file),
+                    gain_loss_over_time,
+                    how="inner",
+                    on="person_id").drop(["person_id",
+                                          "phone_num",
+                                          "email",
+                                          "address"], axis=1)
+
+    html_file = [["header", "Player gain/loss over time"]]
+    j = 1
+    for i in gain_loss.iterrows():
+        html_file.append([])
+        name = i[1]["first_name"] + " " + i[1]["last_name"]
+        html_file[j] = [name, str(i[1]["gain/loss"])]
+        j += 1
+    webbrowser.open(html_temp_file_generator(html_file))
+
+player_payment_preference()
