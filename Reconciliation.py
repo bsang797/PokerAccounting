@@ -8,12 +8,12 @@ class Reconciliation:
 
     def chips_purchased(self):
         transaction_is_chip = self.transaction[self.transaction["chip_purchase"] == 1]
-        chip_purchase_bydate = transaction_is_chip.groupby(["datetime"])["quantity"].agg("sum")
+        chip_purchase_bydate = transaction_is_chip.groupby(["session_id"])["quantity"].agg("sum")
         return chip_purchase_bydate
 
     def chips_cashed(self):
         transaction_not_chip = self.transaction[self.transaction["chip_purchase"] == 0]
-        chip_cashed_bydate = transaction_not_chip.groupby(["datetime"])["quantity"].agg("sum")
+        chip_cashed_bydate = transaction_not_chip.groupby(["session_id"])["quantity"].agg("sum")
         return chip_cashed_bydate
 
     def chips_floating(self):
@@ -25,10 +25,10 @@ class Reconciliation:
         return debt_outstanding
 
     def total_rake(self):
-        end_float = self.shift.groupby(["datetime"])["end_float"].agg("sum")
-        start_float = self.shift.groupby(["datetime"])["start_float"].agg("sum")
+        end_float = self.shift.groupby(["session_id"])["end_float"].agg("sum")
+        start_float = self.shift.groupby(["session_id"])["start_float"].agg("sum")
         return end_float - start_float
 
     def total_tips(self):
-        tips = self.shift.groupby(["datetime"])["tips"].agg("sum")
+        tips = self.shift.groupby(["session_id"])["tips"].agg("sum")
         return tips
