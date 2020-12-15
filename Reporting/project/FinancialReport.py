@@ -13,18 +13,18 @@ class FinancialReport:
         self.shifts = shifts
 
     def total_revenue(self): # would I want to group by gameday ID here?
-        rake_collected = self.overview.groupby(["gameday_id"])["rake_collected"].agg("sum")
-        tips_collected = self.overview.groupby(["gameday_id"])["tips_collected"].agg("sum")
+        rake_collected = self.overview.groupby(["session_id"])["rake_collected"].agg("sum")
+        tips_collected = self.overview.groupby(["session_id"])["tips_collected"].agg("sum")
         return rake_collected + tips_collected
 
     def revenue_breakdown(self): # % tips per rake
-        rake_collected = self.overview.groupby(["gameday_id"])["rake_collected"].agg("sum")
-        tips_collected = self.overview.groupby(["gameday_id"])["tips_collected"].agg("sum")
+        rake_collected = self.overview.groupby(["session_id"])["rake_collected"].agg("sum")
+        tips_collected = self.overview.groupby(["session_id"])["tips_collected"].agg("sum")
         return (tips_collected/rake_collected)*100
 
     def revenue_per_employee(self):
-        rake_collected = self.overview.groupby(["gameday_id"])["rake_collected"].agg("sum")
-        tips_collected = self.overview.groupby(["gameday_id"])["tips_collected"].agg("sum")
+        rake_collected = self.overview.groupby(["session_id"])["rake_collected"].agg("sum")
+        tips_collected = self.overview.groupby(["session_id"])["tips_collected"].agg("sum")
         employees = self.roles.groupby("role")["person_id"].nunique()
         return self.total_revenue()/employees["Dealer"]
 
@@ -38,7 +38,7 @@ class FinancialReport:
         return (chip_purchase/end_float)*100
 
     def debt_float_ratio(self):
-        return (self.debt_outstanding()/self.total_revenue())
+        return self.debt_outstanding()/self.total_revenue()
 
     def avg_debt_per_player(self):
         players = self.roles.groupby("role")["person_id"].nunique()

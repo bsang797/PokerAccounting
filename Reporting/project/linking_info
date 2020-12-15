@@ -1,0 +1,17 @@
+Information to link buttons
+
+End of day reconciliation report:
+Call @eodrec(session_id)
+Args: session_id - int
+
+Financial report:
+Call @financial_report()
+Args: n/a
+
+Dealer report:
+Call @dealer_report()
+Args: n/a
+
+Player report:
+Call @player_report(person_id)
+Args: person_id - int

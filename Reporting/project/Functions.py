@@ -21,7 +21,6 @@ def html_temp_file_generator(nested_list):
     for i in nested_list:
         if i[0] == "header":
             string += "<h" + str(header_num) + "> " + i[1] + " <h" + str(header_num) + ">"
-            header_num += 1
         else:
             string += "<p> " + i[0] + ": " + i[1] + " <p>"
     string += "</body></html>"

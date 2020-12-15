@@ -23,10 +23,7 @@ class PlayerReport:
     def cash_credit_preference(self):
         preference = self.transactions.groupby(["person_id", "transaction_type"]).size().reset_index(name="count")
         preference["preference"] = preference["transaction_type"].map(str) + '(' + preference["count"].map(str) + ')'
-        return preference["preference"].astype(str).groupby(preference["person_id"]).agg(["size", ", ".join])
-
-
-
+        return preference["preference"].groupby(preference["person_id"]).agg(["size", ", ".join])["join"]
 
     def gain_loss_over_time(self):
         return self.transactions.groupby(["person_id"])["quantity"].agg("sum").reset_index(name="gain/loss")
