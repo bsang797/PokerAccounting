@@ -16,7 +16,6 @@ class MainMenu:
         self.label_fontsize = 20
         self.option_menu_width = 18
         self.bg_color = "#F0F0F0"
-        self.root.title("Poker Accounting System")
 
         self.overview_file = overview_file
         self.people_file = people_file
@@ -36,6 +35,7 @@ class MainMenu:
         self.tabs()
         self.chip_labels()
         self.debt_labels()
+        self.root.title("Poker Accounting System")
 
     def load_ppl_data(self):
         ppl = data_exporter(self.people_file)[['person_id', 'first_name', 'last_name']]
@@ -210,6 +210,7 @@ class MainMenu:
         self.transaction_id = data_exporter(self.transactions_file)['transaction_id'].max() + 1
         self.date_time = datetime.now()
         self.chip_purchase = 1
+        self.root.title("Buy-In Transaction")
 
         self.buttons_frame.destroy()
         self.tab_parent.destroy()
@@ -313,7 +314,7 @@ class MainMenu:
         self.transaction_id = data_exporter(self.transactions_file)['transaction_id'].max() + 1
         self.date_time = datetime.now()
         self.chip_purchase = 0
-        self.option_menu_width
+        self.root.title("Cash-Out Transaction")
 
         self.buttons_frame.destroy()
         self.tab_parent.destroy()
@@ -343,7 +344,7 @@ class MainMenu:
         self.quant_ent.grid(row=2, column=1)
 
         # === Email
-        email_label = Label(self.cashout_frame, text="E-Transfer Recipient")
+        email_label = Label(self.cashout_frame, text="E-Transfer Sender")
         email_label['font'] = font.Font(family=self.font_style, size=self.button_fontsize)
         email_label.grid(row=3, column=0, sticky="w")
 
@@ -378,6 +379,27 @@ class MainMenu:
                                                     -int(self.quant_ent.get()),
                                                     email_player_id,
                                                     self.chip_purchase])
+
+        if self.email_var.get() != "":
+
+            append_list_as_row(self.transactions_file, [email_player_id,
+                                                        self.transaction_id,
+                                                        self.session_id,
+                                                        self.date_time,
+                                                        "cash",
+                                                        int(self.quant_ent.get()),
+                                                        "",
+                                                        self.chip_purchase])
+
+            append_list_as_row(self.transactions_file, [email_player_id,
+                                                        self.transaction_id,
+                                                        self.session_id,
+                                                        self.date_time,
+                                                        "credit",
+                                                        -int(self.quant_ent.get()),
+                                                        "",
+                                                        0])
+
         self.cashout_frame.destroy()
         self.main_menu_frames()
 
@@ -389,7 +411,7 @@ class MainMenu:
         self.transaction_id = data_exporter(self.transactions_file)['transaction_id'].max() + 1
         self.date_time = datetime.now()
         self.chip_purchase = 0
-        self.option_menu_width
+        self.root.title("Debt Repayment")
 
         self.buttons_frame.destroy()
         self.tab_parent.destroy()
@@ -461,6 +483,27 @@ class MainMenu:
                                                     -int(self.quant_ent.get()),
                                                     "",
                                                     self.chip_purchase])
+
+        if self.email_var.get() != "":
+            append_list_as_row(self.transactions_file, [email_player_id,
+                                                        self.transaction_id,
+                                                        self.session_id,
+                                                        self.date_time,
+                                                        "cash",
+                                                        -int(self.quant_ent.get()),
+                                                        "",
+                                                        0])
+
+            append_list_as_row(self.transactions_file, [email_player_id,
+                                                        self.transaction_id,
+                                                        self.session_id,
+                                                        self.date_time,
+                                                        "credit",
+                                                        int(self.quant_ent.get()),
+                                                        "",
+                                                        0])
+
+
         self.debt_frame.destroy()
         self.main_menu_frames()
 
@@ -471,6 +514,7 @@ class MainMenu:
     def shift_button(self):
         self.shift_id = data_exporter(self.shift_file)['shift_id'].max() + 1
         self.date_time = datetime.now()
+        self.root.title("Shift Reconciliation")
 
         self.buttons_frame.destroy()
         self.tab_parent.destroy()
@@ -547,21 +591,25 @@ class MainMenu:
     def report_button(self):
         self.buttons_frame.destroy()
         self.tab_parent.destroy()
+        self.root.title("Reports")
 
         self.report_frame = Frame(self.root)
         self.report_frame.grid()
 
-        fin_button = Button(self.report_frame, text="Financial Report")
+        fin_button = Button(self.report_frame, text="Financial Report",
+                            command=lambda: webbrowser.open(os.getcwd() + "/FINReport/FINReport.html"))
         fin_button['font'] = font.Font(family=self.font_style, size=self.button_fontsize)
         fin_button.config(width=self.option_menu_width)
         fin_button.grid(row=0)
 
-        dealer_button = Button(self.report_frame, text="Dealer Report")
+        dealer_button = Button(self.report_frame, text="Dealer Report",
+                            command=lambda: webbrowser.open(os.getcwd() + "/DealerReport/DealerReport.html"))
         dealer_button['font'] = font.Font(family=self.font_style, size=self.button_fontsize)
         dealer_button.config(width=self.option_menu_width)
         dealer_button.grid(row=1)
 
-        player_button = Button(self.report_frame, text="Player Report")
+        player_button = Button(self.report_frame, text="Player Report",
+                            command=lambda: webbrowser.open(os.getcwd() + "/PlayerReport/PlayerReport.html"))
         player_button['font'] = font.Font(family=self.font_style, size=self.button_fontsize)
         player_button.config(width=self.option_menu_width)
         player_button.grid(row=2)
